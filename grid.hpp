@@ -12,23 +12,23 @@ class Grid {
     public:
         Grid() {}
 
-        void generateSudokuGrid() {
+        void generateSudokuGrid(int seed=time(0)) {
 
-            srand(time(0));
+            srand(seed);
 
             for (int i = 0; i != 3; ++i) {
                 for (int j = 0; j != 3; ++j) {
                     
                     std::set<int> occurrence_checker;
                     int chosen_number = 0;
-                    occurrence_checker.insert(chosen_number);
 
                     for (int k = 0; k != 3; ++k) {
                         for (int l = 0; l != 3; ++l) {
-                            while (occurrence_checker.insert(chosen_number).second) {
-                                int chosen_number = rand() % 10;
-                                std::cout << l << k << chosen_number << std::endl;
-                            }
+
+                            do {
+                                chosen_number = rand() % 9 + 1;
+                            } while (!occurrence_checker.insert(chosen_number).second);
+
                             arr[i * 3 + k][j * 3 + l] = chosen_number;
 
                         }
@@ -40,5 +40,14 @@ class Grid {
             
             return;
         }
+
+    void printGrid() {
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                std::cout << "[" << arr[i][j] << "]";
+            }
+            std::cout << std::endl;
+        }
+    }
 
 };
