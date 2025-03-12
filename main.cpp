@@ -5,7 +5,7 @@ int main() {
     Grid* generator = new Grid();
 
     generator->generateSudokuGrid();
-    generator->printGrid();
+    std::cout << generator << std::endl;
 
     return 0;
 }

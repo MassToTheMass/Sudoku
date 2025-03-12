@@ -13,6 +13,8 @@ class Grid {
             int first;
             int second;
             int value;
+            Node* save_state[9][9];
+            std::set<int> checked_digits;
             Node(int f, int s) : first(f), second(s) {}
 
             friend std::ostream& operator<<(std::ostream& os, const Node& n) {
@@ -33,7 +35,7 @@ class Grid {
             srand(seed);
             for (int i = 8; i > 0; --i) {
                 for (int j = 8; j > 0; --j) {
-                    location_stack.push(new Node(i, j));
+                    location_stack.push(arr[i][j]);
                 }
             }
             solveGrid();
@@ -78,27 +80,45 @@ class Grid {
             return true;
         }
 
+        Node* getPreviousNode(Node* current) {
+            if (current->first == 0) {
+                return arr[8][current->first -1];
+            } else {
+                return arr[current->first - 1][current->second];
+            }
+        }
+
     
         bool solveGrid() {
             Node* current = location_stack.top();
 
-            // need to make a set to check numbers
+            std::set<int> checked_digits;
 
-            current->value = rand() % 9 + 1; // random between 1 and 9
-            if (checkRow(current), checkColumn(current), checkBox(current)) {
-                location_stack.pop();
-            }
-        }
-
-        void printGrid() {
-            for (int i = 0; i < 9; ++i) {
-                for (int j = 0; j < 9; ++j) {
-                    std::cout << "[" << arr[i][j] << "]";
+            while (checked_digits.size() < 9) {
+                current->value = rand() % 9 + 1; // random between 1 and 9
+                if (checkRow(current), checkColumn(current), checkBox(current)) {
+                    location_stack.pop();
+                    return true;
+                } else {
+                    current->checked_digits.insert(current->value);
                 }
-                std::cout << std::endl;
             }
+
+            
+
+            location_stack.push(getPreviousNode(current));
+            return false;
+
         }
 
-    friend std::ostream& operator<<(std::ostream& os, const Grid g) {}
+    friend std::ostream& operator<<(std::ostream& os, const Grid g) {
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                os << "[" << g.arr[i][j]->value << "]";
+            }
+            os << std::endl;
+        }
+        return os;
+    }
 
 };
